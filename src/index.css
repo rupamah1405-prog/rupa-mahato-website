@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-cormorant: "Cormorant Garamond", serif;
+  
+  --color-deep-red: #8E0D3C;
+  --color-blackcurrant: #1D1842;
+  --color-orange-brand: #EF3B33;
+  --color-rose-pink: #FDA1A2;
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-[#1D1842] via-[#1D1842] to-[#8E0D3C] text-white font-sans antialiased min-h-screen relative;
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #EF3B33;
+  color: #FFFFFF;
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: perspective(400px) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(400px) rotateY(360deg);
+  }
+}
+
+.animate-rotate-3d {
+  animation: rotate3d 9s linear infinite;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+/* Pause 3D rotation when the logo or the brand group is hovered */
+.animate-rotate-3d:hover,
+.group:hover .animate-rotate-3d {
+  animation-play-state: paused;
+}
+
