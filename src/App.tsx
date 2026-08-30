@@ -14,6 +14,12 @@ import {
   LatestInsights, 
   FinalCTA 
 } from './components/HomeSections';
+import { FAQSection } from './components/FAQSection';
+import { Footer } from './components/Footer';
+import { SeoProject } from './components/projects/SeoProject';
+import { InstagramProject } from './components/projects/InstagramProject';
+import { MetaAdsProject } from './components/projects/MetaAdsProject';
+import { VideoEditingProject } from './components/projects/VideoEditingProject';
 import { socialsConfig } from './config/socials';
 import { 
   Instagram, 
@@ -41,7 +47,8 @@ import {
   Settings,
   AlertCircle,
   ArrowLeft,
-  Check
+  Check,
+  HelpCircle
 } from 'lucide-react';
 
 // --- Global Data Constants ---
@@ -49,7 +56,6 @@ const CAPABILITY_TAGS = [
   "Social Media Strategy",
   "Content Strategy",
   "SEO Optimization",
-  "Google Ads Management",
   "Meta Ads Campaigns",
   "Instagram Growth Marketing",
   "Performance Marketing",
@@ -58,16 +64,12 @@ const CAPABILITY_TAGS = [
   "Audience Targeting"
 ];
 
-const EXPERIENCE_SUMMARY = [
-  { role: "Social Media Strategist", project: "Yours Digitally campaigns" },
-  { role: "Content & Bio Specialist", project: "Local Brand Growth" }
-];
-
 // --- Components ---
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('hero');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -87,8 +89,33 @@ const Navbar = () => {
     { name: 'Experience', path: '/experience' },
     { name: 'Work', path: '/work' },
     { name: 'Blog', path: '/blog' },
+    { name: 'Q&A', path: '/qa' },
     { name: 'Contact', path: '/contact' },
   ];
+
+  const handleNavClick = (link: typeof navLinks[0]) => {
+    if (location.pathname === link.path) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    navigate(link.path);
+  };
+
+  const isLinkActive = (link: typeof navLinks[0]) => {
+    if (link.path === '/') {
+      return location.pathname === '/';
+    }
+    if (link.path === '/work') {
+      return location.pathname === '/work' || location.pathname.startsWith('/work/') || location.pathname.startsWith('/projects/');
+    }
+    if (link.path === '/blog') {
+      return location.pathname === '/blog' || location.pathname === '/admin' || location.pathname === '/blog-manager';
+    }
+    if (link.path === '/qa') {
+      return location.pathname === '/qa' || location.pathname === '/faq' || location.pathname === '/q-and-a';
+    }
+    return location.pathname === link.path || location.pathname.startsWith(link.path + '/');
+  };
 
   return (
     <>
@@ -108,7 +135,11 @@ const Navbar = () => {
           {/* Brand/Logo on the left */}
           <div 
             onClick={() => {
-              navigate('/');
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                navigate('/');
+              }
             }}
             className="flex items-center gap-3 cursor-pointer group select-none flex-shrink-0"
           >
@@ -119,17 +150,15 @@ const Navbar = () => {
           </div>
           
           {/* Center Navigation Capsule */}
-          <div className="hidden lg:flex items-center bg-black/20 backdrop-blur-sm border border-white/5 rounded-[12px] p-1 gap-2.5">
+          <div className="hidden lg:flex items-center bg-black/20 backdrop-blur-sm border border-white/5 rounded-[12px] p-1 gap-2">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
+              const active = isLinkActive(link);
               return (
                 <div
                   key={link.name}
-                  onClick={() => {
-                    navigate(link.path);
-                  }}
-                  className={`text-[9px] uppercase font-bold tracking-[0.2em] w-28 h-10 flex items-center justify-center rounded-[8px] transition-all duration-300 ease-in-out select-none cursor-pointer ${
-                    isActive 
+                  onClick={() => handleNavClick(link)}
+                  className={`text-[9px] uppercase font-bold tracking-[0.18em] px-5 h-10 flex items-center justify-center rounded-[8px] transition-all duration-300 ease-in-out select-none cursor-pointer ${
+                    active 
                       ? 'bg-[#ff6b35] text-white shadow-[0_0_20px_rgba(255,107,53,0.5)] border border-[#ff6b35] hover:scale-105 hover:shadow-[0_0_25px_rgba(255,107,53,0.6)]' 
                       : 'bg-[#0F0B26]/60 backdrop-blur-md border border-[#ff6b35]/25 text-white/70 hover:bg-gradient-to-r hover:from-[#ff6b35] hover:to-[#EF3B33] hover:text-white hover:scale-105 hover:shadow-[0_0_15px_rgba(255,107,53,0.35)] hover:border-[#ff6b35]'
                   }`}
@@ -143,7 +172,13 @@ const Navbar = () => {
           {/* Right CTA Button (Desktop) */}
           <div className="hidden lg:block flex-shrink-0">
             <motion.button
-              onClick={() => navigate('/contact')}
+              onClick={() => {
+                if (location.pathname === '/contact') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  return;
+                }
+                navigate('/contact');
+              }}
               whileHover={{ 
                 scale: 1.05,
                 boxShadow: "0 10px 25px -5px rgba(239, 59, 51, 0.45)"
@@ -182,7 +217,7 @@ const Navbar = () => {
 
             <div className="flex flex-col gap-6 text-center w-full z-10 my-auto">
               {navLinks.map((link, i) => {
-                const isActive = location.pathname === link.path;
+                const active = isLinkActive(link);
                 return (
                   <motion.div
                     key={link.name}
@@ -192,15 +227,15 @@ const Navbar = () => {
                     onClick={() => {
                       setIsMenuOpen(false);
                       setTimeout(() => {
-                        navigate(link.path);
+                        handleNavClick(link);
                       }, 250);
                     }}
                     className={`text-2xl font-serif italic transition-all duration-300 relative inline-block mx-auto cursor-pointer ${
-                      isActive ? 'text-[#EF3B33] font-bold' : 'text-white hover:text-[#EF3B33]'
+                      active ? 'text-[#EF3B33] font-bold' : 'text-white hover:text-[#EF3B33]'
                     }`}
                   >
                     <span>{link.name}</span>
-                    {isActive && (
+                    {active && (
                       <span className="absolute -bottom-1 left-2 right-2 h-0.5 bg-[#EF3B33] rounded-full" />
                     )}
                   </motion.div>
@@ -267,156 +302,94 @@ const Hero = () => {
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 pt-28 pb-12 sm:pt-36 sm:pb-16 md:pt-40 lg:pt-44 z-10 w-full animate-fade-in">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-          
-          {/* Main Typography Statement Column */}
-          <div className="lg:col-span-7 space-y-10 text-left">
-            {/* Top Badge / Announcement Tagline */}
+        {/* Main Typography Statement */}
+        <div className="max-w-4xl lg:max-w-5xl space-y-8 sm:space-y-10 text-left">
+          {/* Top Badge / Announcement Tagline */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center gap-3 pb-2"
+          >
+            <div className="w-8 h-[1px] bg-rose-pink/30" />
+            <span className="text-[10px] md:text-xs font-sans uppercase tracking-[0.35em] font-black text-rose-pink">
+              SOCIAL MEDIA MANAGER & CONTENT STRATEGIST
+            </span>
+          </motion.div>
+
+          {/* Typography Stack with Beautiful Spacing */}
+          <div className="cursor-default space-y-6">
+            {/* Rupa Mahato Name */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-3 pb-2"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="pb-1"
             >
-              <div className="w-8 h-[1px] bg-rose-pink/30" />
-              <span className="text-[10px] md:text-xs font-sans uppercase tracking-[0.35em] font-black text-rose-pink">
-                SOCIAL MEDIA MANAGER & CONTENT STRATEGIST
+              <span className="font-serif italic text-4xl sm:text-5xl lg:text-[4.2vw] text-white/50 block leading-none font-medium">
+                Rupa Mahato
               </span>
             </motion.div>
- 
-            {/* Typography Stack with Beautiful Spacing */}
-            <div className="cursor-default space-y-6">
-              {/* Rupa Mahato Name - Scaled down visual scale (20-30% smaller, elegant serif accent) */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                className="pb-1"
-              >
-                <span className="font-serif italic text-4xl sm:text-5xl lg:text-[4.2vw] text-white/50 block leading-none font-medium">
-                  Rupa Mahato
-                </span>
-              </motion.div>
-              
-              {/* Main Professional Title - Primary eye-catching layout focus */}
-              <motion.h1
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                className="text-3xl sm:text-5xl lg:text-[3.2vw] tracking-tight font-sans uppercase font-black text-white block leading-[1.12]"
-              >
-                Social Media Manager & <br className="hidden sm:inline" />Content Strategist <span className="text-[#EF3B33]">in Jamshedpur</span>
-              </motion.h1>
-            </div>
- 
-            {/* Subheading / Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="text-white/80 font-sans text-sm sm:text-base leading-relaxed max-w-xl text-left font-light pt-2"
-            >
-              Helping brands grow through content strategy, Instagram marketing, SEO, Meta Ads, analytics, and performance-driven social media management.
-            </motion.p>
- 
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row gap-5 pb-4"
-            >
-              <motion.button
-                onClick={() => navigate('/work')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-10 py-5 bg-[#EF3B33] text-white uppercase text-[9px] font-black tracking-widest rounded-full hover:bg-[#D9352F] hover:shadow-[0_20px_40px_-5px_rgba(239,59,51,0.35)] transition-all duration-300 text-center cursor-pointer font-sans border-none"
-              >
-                View My Work
-              </motion.button>
-              <motion.button
-                onClick={() => navigate('/contact')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-10 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white uppercase text-[9px] font-black tracking-widest rounded-full hover:bg-white/10 hover:border-[#EF3B33] hover:shadow-[0_20px_40px_-10px_rgba(239,59,51,0.1)] transition-all duration-300 text-center cursor-pointer font-sans"
-              >
-                Hire Me
-              </motion.button>
-            </motion.div>
-          </div>
- 
-          {/* Right Column: Dynamic Info-Rich Orange Cards Grid */}
-          <div className="lg:col-span-5 space-y-6">
             
-            {/* Philosophy Card - Repositioned from About */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              style={{ backgroundColor: "#B55239", borderColor: "rgba(253, 161, 162, 0.15)" }}
-              className="p-5 sm:p-6 md:p-7 border rounded-3xl shadow-[0_20px_45px_-12px_rgba(0,0,0,0.5)] relative overflow-hidden group text-left"
+            {/* Main Professional Title */}
+            <motion.h1
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="text-3xl sm:text-5xl lg:text-[3.4vw] tracking-tight font-sans uppercase font-black text-white block leading-[1.12]"
             >
-              <span className="text-[9px] uppercase tracking-widest font-black text-[#FDA1A2] block mb-3 font-sans">
-                PHILOSOPHY
-              </span>
-              <h3 className="font-serif text-xl md:text-2xl text-white mb-3 italic font-medium leading-normal">
-                "Content is the bridge; conversion is the destination."
-              </h3>
-              <p className="text-xs font-sans text-white/80 leading-relaxed font-light">
-                Every copy written, reels outlined, and campaign launched is precisely sequenced to attract high-intent leads and build lasting brand equity.
-              </p>
-              
-              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-            </motion.div>
- 
-            {/* Side-by-Side Dynamic Subgrid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              
-              {/* 100% Organic Strategy Card - Repositioned from About */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                style={{ backgroundColor: "#B55239", borderColor: "rgba(253, 161, 162, 0.15)" }}
-                className="p-5 sm:p-6 md:p-6 py-6 border rounded-3xl text-left relative overflow-hidden shadow-[0_20px_45px_-12px_rgba(0,0,0,0.5)] flex flex-col justify-center min-h-0 group hover:scale-[1.02] transition-transform duration-300"
-              >
-                <div className="text-4xl font-serif text-[#FDA1A2] font-black mb-1.5">100%</div>
-                <p className="text-[10px] uppercase font-bold tracking-widest text-white/90 font-sans leading-tight">Organic Content Strategy</p>
-                <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-white/5 rounded-full blur-xl pointer-events-none" />
-              </motion.div>
-
-              {/* Selected Work Summary Focus Cards Stack - Repositioned from About */}
-              <div className="space-y-4 flex flex-col justify-between">
-                {EXPERIENCE_SUMMARY.map((exp, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + idx * 0.1, duration: 1 }}
-                    whileHover={{ 
-                      y: -2,
-                      backgroundColor: "#c25e45",
-                      boxShadow: "0 15px 30px -5px rgba(0, 0, 0, 0.4)"
-                    }}
-                    style={{ backgroundColor: "#B55239", borderColor: "rgba(253, 161, 162, 0.15)" }}
-                    className="p-4 rounded-2xl border text-white flex items-center gap-3 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] transition-all duration-300 text-left flex-1 cursor-default"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-white shrink-0" />
-                    <div>
-                      <h4 className="text-[10px] font-black uppercase text-white leading-none font-sans">{exp.role}</h4>
-                      <p className="text-[10px] text-white/85 mt-2 font-sans font-light leading-snug">{exp.project}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-            </div>
-
+              Social Media Manager & <br className="hidden sm:inline" />Content Strategist <span className="text-[#EF3B33]">in Jamshedpur</span>
+            </motion.h1>
           </div>
 
+          {/* Subheading / Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="text-white/80 font-sans text-base sm:text-lg leading-relaxed max-w-2xl text-left font-light pt-2"
+          >
+            Helping brands grow through content strategy, Instagram marketing, SEO, Meta Ads, analytics, and performance-driven social media management.
+          </motion.p>
+
+          {/* Action Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col sm:flex-row gap-5 pb-4"
+          >
+            <motion.button
+              onClick={() => navigate('/work')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-10 py-5 bg-[#EF3B33] text-white uppercase text-[9px] font-black tracking-widest rounded-full hover:bg-[#D9352F] hover:shadow-[0_20px_40px_-5px_rgba(239,59,51,0.35)] transition-all duration-300 text-center cursor-pointer font-sans border-none"
+            >
+              View My Work
+            </motion.button>
+            <motion.button
+              onClick={() => {
+                if (location.pathname === '/') {
+                  const el = document.getElementById('contact');
+                  if (el) {
+                    const navOffset = 80;
+                    const targetY = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    return;
+                  }
+                }
+                navigate('/contact');
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-10 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white uppercase text-[9px] font-black tracking-widest rounded-full hover:bg-white/10 hover:border-[#EF3B33] hover:shadow-[0_20px_40px_-10px_rgba(239,59,51,0.1)] transition-all duration-300 text-center cursor-pointer font-sans"
+            >
+              Let’s Connect
+            </motion.button>
+          </motion.div>
         </div>
 
-        {/* Capability Tags Row at the bottom of Home Section - Repositioned from About */}
+        {/* Capability Tags Row at the bottom of Home Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -474,12 +447,12 @@ const SectionHeader = ({ title, subtitle, align = 'center' }: { title: string; s
 
 const About = () => {
   return (
-    <section id="about" className="py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent overflow-hidden scroll-mt-20 relative border-t border-white/5">
+    <section id="about" className="pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-20 md:pb-28 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent overflow-hidden relative">
       <div className="max-w-[1720px] mx-auto w-full relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Side: Profile Image - Clean & Completely Static with Refined Frames */}
-          <div className="lg:col-span-5 flex justify-center relative min-h-0 py-8 lg:py-0 items-center">
+          <div className="lg:col-span-5 flex justify-center relative min-h-0 py-6 lg:py-0 items-center">
             
             {/* Ambient visual decorations */}
             <div className="absolute w-[280px] h-[280px] border border-white/[0.03] rounded-full pointer-events-none" />
@@ -488,8 +461,7 @@ const About = () => {
             {/* Static Premium Container */}
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="relative flex items-center justify-center p-8 w-full h-full"
             >
@@ -531,25 +503,24 @@ const About = () => {
             <div>
               <motion.span 
                 initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 0.8, y: 0 }}
-                viewport={{ once: true }}
-                className="text-[10px] uppercase tracking-[0.45em] font-black text-rose-pink block mb-3"
+                animate={{ opacity: 0.8, y: 0 }}
+                className="text-[10px] uppercase tracking-[0.45em] font-black text-rose-pink block mb-3 font-sans"
               >
-                ABOUT PREVIEW
+                ABOUT
               </motion.span>
-              <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight font-medium">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white leading-tight font-medium">
                 Who Is Rupa Mahato?
-              </h2>
+              </h1>
               <div className="h-px bg-white/10 w-16 mt-6" />
             </div>
 
             {/* Main Bio Context */}
             <div className="font-sans text-white/95 text-base sm:text-lg leading-relaxed text-left space-y-6">
               <p className="font-light">
-                I’m <strong className="font-bold text-rose-pink">Rupa Mahato</strong>, a <strong className="font-semibold text-rose-pink">Social Media Manager</strong> and <strong className="font-semibold text-rose-pink">Content Strategist</strong> based in <strong className="font-semibold text-rose-pink">Jamshedpur</strong>. I help businesses grow through SEO, Google Ads, Meta Ads, Instagram Marketing, content strategy, performance marketing, and data-driven digital campaigns. My focus is on building strong brand visibility, increasing engagement, generating quality leads, and driving measurable business growth.
+                I’m <strong className="font-bold text-rose-pink">Rupa Mahato</strong>, a <strong className="font-semibold text-rose-pink">Social Media Manager</strong> and <strong className="font-semibold text-rose-pink">Content Strategist</strong> based in <strong className="font-semibold text-rose-pink">Jamshedpur</strong>. I help businesses grow through SEO, Meta Ads, Instagram Marketing, content strategy, performance marketing, and data-driven digital campaigns. My focus is on building strong brand visibility, increasing engagement, generating quality leads, and driving measurable business growth.
               </p>
               <p className="font-light text-sm text-white/80 leading-relaxed">
-                As a dedicated <strong className="font-medium text-white">Google Ads Expert</strong>, <strong className="font-medium text-white">SEO Specialist</strong>, and <strong className="font-medium text-white">Digital Marketing</strong> consultant, I deliver comprehensive <strong className="font-medium text-white">Google Ads Management</strong> and analytics-driven social media management. By combining organic storytelling with systematic performance marketing, I streamline your brand's narrative in Jamshedpur to convert passive impressions into loyal community brand equity and direct business conversions.
+                As a dedicated <strong className="font-medium text-white">SEO Specialist</strong> and <strong className="font-medium text-white">Digital Marketing</strong> consultant, I deliver comprehensive social media strategy and analytics-driven campaign management. By combining organic storytelling with systematic performance marketing, I streamline your brand's narrative in Jamshedpur to convert passive impressions into loyal community brand equity and direct business conversions.
               </p>
             </div>
 
@@ -564,8 +535,8 @@ const About = () => {
                 <p className="text-xs text-white/70 leading-relaxed font-light">Targeted metadata keyword strategies to capture local Jamshedpur search dominance.</p>
               </div>
               <div className="border-l-2 border-rose-pink/30 pl-4 space-y-1">
-                <h4 className="text-xs uppercase font-extrabold tracking-widest text-[#FDA1A2] font-sans">Google & Meta Ads</h4>
-                <p className="text-xs text-white/70 leading-relaxed font-light">High-performing search campaigns and paid funnels optimized for lead generation and conversion tracking.</p>
+                <h4 className="text-xs uppercase font-extrabold tracking-widest text-[#FDA1A2] font-sans">Meta Ads & Paid Social</h4>
+                <p className="text-xs text-white/70 leading-relaxed font-light">High-performing targeted funnels and creative ad campaigns optimized for lead generation and conversion tracking.</p>
               </div>
               <div className="border-l-2 border-rose-pink/30 pl-4 space-y-1">
                 <h4 className="text-xs uppercase font-extrabold tracking-widest text-[#FDA1A2] font-sans">Data & Reporting</h4>
@@ -690,7 +661,7 @@ const SelectedWork = () => {
       badge: "Organic Traffic",
       desc: "Comprehensive keyword research, content mapping, and organic visibility optimization designed to improve search rankings.",
       coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-      link: "#contact",
+      route: "/work/seo-growth-strategy",
       tags: ["Keyword Mapping", "Technical SEO", "On-Page Audits", "Authority Building"]
     },
     {
@@ -698,7 +669,7 @@ const SelectedWork = () => {
       badge: "Social Systems",
       desc: "Audience growth, profile optimization, engagement systems, and content strategy for long-term brand visibility.",
       coverImage: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&q=80&w=800",
-      link: "#contact",
+      route: "/work/instagram-growth-framework",
       tags: ["Reels Distribution", "Bio Strategy", "Engagement Funnels", "Profile Overhaul"]
     },
     {
@@ -706,16 +677,16 @@ const SelectedWork = () => {
       badge: "Paid Acquisition",
       desc: "Strategic advertising campaigns focused on audience targeting, creative testing, and conversion optimization.",
       coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-      link: "#contact",
+      route: "/work/meta-ads-campaign",
       tags: ["Creative Testing", "Custom Audiences", "Funnel Setups", "ROI Engineering"]
     },
     {
-      title: "Google Ads Performance Marketing",
-      badge: "GOOGLE ADS",
-      desc: "Strategic Google Ads campaigns focused on lead generation, conversion optimization, keyword targeting, audience segmentation, and measurable business growth.",
-      coverImage: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800",
-      link: "#contact",
-      tags: ["KEYWORD TARGETING", "SEARCH ADS", "CONVERSION TRACKING"]
+      title: "Video Editing & Multimedia Content",
+      badge: "Video Marketing",
+      desc: "High-retention short-form video editing, kinetic captions, rhythm pacing, and motion graphics tailored for viral distribution.",
+      coverImage: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800",
+      route: "/work/video-editing-content",
+      tags: ["Short-Form Video", "Kinetic Typography", "Motion Graphics", "Sound Design"]
     }
   ];
 
@@ -759,7 +730,8 @@ const SelectedWork = () => {
                 boxShadow: "0 20px 40px -15px rgba(255, 107, 53, 0.35)",
                 borderColor: "#ff6b35"
               }}
-              className="group relative flex flex-col justify-between h-full bg-[#0F0B26]/40 backdrop-blur-md border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:bg-[#0F0B26]/60 p-6 sm:p-8"
+              onClick={() => navigate(project.route)}
+              className="group relative flex flex-col justify-between h-full bg-[#0F0B26]/40 backdrop-blur-md border border-white/10 rounded-[2rem] overflow-hidden transition-all duration-500 hover:bg-[#0F0B26]/60 p-6 sm:p-8 cursor-pointer"
             >
               <div>
                 {/* Thumbnail Container with Gradient Overlay */}
@@ -780,7 +752,7 @@ const SelectedWork = () => {
                 </div>
 
                 {/* Title and Description */}
-                <h3 className="text-2xl font-serif text-white mb-3 font-medium tracking-tight">
+                <h3 className="text-2xl font-serif text-white mb-3 font-medium tracking-tight group-hover:text-[#FDA1A2] transition-colors">
                   {project.title}
                 </h3>
                 
@@ -803,8 +775,9 @@ const SelectedWork = () => {
 
               {/* View Case Study Button */}
               <motion.button 
-                onClick={() => {
-                  navigate('/contact');
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(project.route);
                 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-[#ff6b35]/10 text-white hover:bg-[#ff6b35] border border-[#ff6b35]/30 hover:border-[#ff6b35] px-5 py-3.5 text-[9px] uppercase font-black tracking-[0.25em] flex items-center justify-center gap-2 rounded-xl transition-all duration-300 font-sans cursor-pointer mt-auto"
@@ -854,13 +827,13 @@ const ServicesSection = () => {
       ]
     },
     {
-      title: "Google Ads Management",
-      desc: "Performance-focused advertising campaigns designed to generate quality leads and maximize ROI.",
+      title: "Meta Ads",
+      desc: "Targeted social media advertising designed to reach the right audience, generate leads, and drive conversions.",
       bullets: [
         "Campaign Setup",
-        "Keyword Research",
-        "Ad Optimization",
-        "Performance Tracking"
+        "Audience Targeting",
+        "Ad Creative Strategy",
+        "Performance Optimization"
       ]
     },
     {
@@ -993,7 +966,7 @@ const ServicesSection = () => {
         </div>
 
         {/* Services Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {services.map((service, i) => (
             <motion.div
               key={i}
@@ -1922,6 +1895,7 @@ const HomePage = () => {
       <WhyWorkWithMe />
       <ToolsIUse />
       <LatestInsights />
+      <FAQSection />
       <FinalCTA />
     </motion.div>
   );
@@ -1929,8 +1903,8 @@ const HomePage = () => {
 
 const AboutPage = () => {
   useSEO(
-    "About Rupa Mahato | Portfolio & Professional Services",
-    "Discover Rupa Mahato's background as a digital marketer and content creator. Explore specialized services including Instagram audits, content calendars, and social strategy."
+    "About Rupa Mahato | Social Media Manager & Content Strategist",
+    "Learn more about Rupa Mahato, a Social Media Manager and Content Strategist in Jamshedpur specializing in organic growth, performance SEO, Meta Ads, and content planning."
   );
   return (
     <motion.div
@@ -1938,9 +1912,9 @@ const AboutPage = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.5 }}
+      className="min-h-screen"
     >
       <About />
-      <ServicesSection />
     </motion.div>
   );
 };
@@ -1979,6 +1953,82 @@ const WorkPage = () => {
   );
 };
 
+const SeoProjectPage = () => {
+  useSEO(
+    "SEO & Organic Growth Strategy | Case Study | Rupa Mahato",
+    "In-depth case study analyzing keyword research, technical SEO audits, and content architecture driving +185% organic search traffic growth."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="pt-24">
+        <SeoProject />
+      </div>
+    </motion.div>
+  );
+};
+
+const InstagramProjectPage = () => {
+  useSEO(
+    "Instagram Growth & Content Strategy | Case Study | Rupa Mahato",
+    "Case study on viral Reels pacing, carousel design frameworks, and profile conversion rate optimization achieving +12.4K organic followers."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="pt-24">
+        <InstagramProject />
+      </div>
+    </motion.div>
+  );
+};
+
+const MetaAdsProjectPage = () => {
+  useSEO(
+    "Meta Ads Lead Generation Campaign | Case Study | Rupa Mahato",
+    "Case study breaking down high-converting creative testing, audience segmentation, and full-funnel retargeting with 4.8x ROAS."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="pt-24">
+        <MetaAdsProject />
+      </div>
+    </motion.div>
+  );
+};
+
+const VideoEditingProjectPage = () => {
+  useSEO(
+    "Video Editing & Multimedia Content | Case Study | Rupa Mahato",
+    "Showcase of short-form video editing, kinetic captions, rhythm beat-matching, and motion graphics driving high audience retention."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="pt-24">
+        <VideoEditingProject />
+      </div>
+    </motion.div>
+  );
+};
+
 const BlogPage = () => {
   useSEO(
     "Insights & Industry Blog | Rupa Mahato Portfolio",
@@ -2009,6 +2059,26 @@ const BlogManagerPage = () => {
       transition={{ duration: 0.5 }}
     >
       <BlogManager />
+    </motion.div>
+  );
+};
+
+const QAPage = () => {
+  useSEO(
+    "Frequently Asked Questions | Rupa Mahato Portfolio",
+    "Find answers to frequently asked questions about social media management, content strategy, SEO audits, video editing, pricing, and campaign timelines."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="pt-24">
+        <FAQSection />
+        <FinalCTA />
+      </div>
     </motion.div>
   );
 };
@@ -2069,12 +2139,25 @@ function AppContent() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/experience" element={<ExperiencePage />} />
           <Route path="/work" element={<WorkPage />} />
+          <Route path="/work/seo-growth-strategy" element={<SeoProjectPage />} />
+          <Route path="/work/instagram-growth-framework" element={<InstagramProjectPage />} />
+          <Route path="/work/meta-ads-campaign" element={<MetaAdsProjectPage />} />
+          <Route path="/work/video-editing-content" element={<VideoEditingProjectPage />} />
+          <Route path="/projects/seo-growth-strategy" element={<SeoProjectPage />} />
+          <Route path="/projects/instagram-growth-framework" element={<InstagramProjectPage />} />
+          <Route path="/projects/meta-ads-campaign" element={<MetaAdsProjectPage />} />
+          <Route path="/projects/video-editing-content" element={<VideoEditingProjectPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/admin" element={<BlogManagerPage />} />
           <Route path="/blog-manager" element={<BlogManagerPage />} />
+          <Route path="/qa" element={<QAPage />} />
+          <Route path="/faq" element={<QAPage />} />
+          <Route path="/q-and-a" element={<QAPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </AnimatePresence>
+
+      <Footer />
     </div>
   );
 }

@@ -15,8 +15,11 @@ import {
   Zap,
   Clock,
   ExternalLink,
-  EyeOff
+  EyeOff,
+  Video,
+  Play
 } from 'lucide-react';
+export { FAQSection } from './FAQSection';
 
 // --- Medium Icon Helper ---
 const MediumIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
@@ -55,12 +58,6 @@ export const FeaturedServices = () => {
       desc: "Laser-targeted campaigns on Instagram & Facebook designed to maximize lead acquisition and amplify ROI.",
     },
     {
-      id: "google-ads",
-      icon: Search,
-      title: "Google Ads",
-      desc: "Intent-based search campaigns placing your business directly in front of prospects actively seeking your solution.",
-    },
-    {
       id: "personal-branding",
       icon: Award,
       title: "Personal Branding",
@@ -69,7 +66,7 @@ export const FeaturedServices = () => {
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
+    <section id="services" className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
       {/* Dynamic Grid Background Backdrop */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(253,161,162,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(253,161,162,0.015)_1px,transparent_1px)] bg-[size:5rem_5rem] pointer-events-none" />
 
@@ -157,26 +154,33 @@ export const FeaturedWork = () => {
       badge: "Social Systems",
       desc: "Audience growth, profile optimization, engagement systems, and content strategy for long-term brand visibility.",
       coverImage: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&q=80&w=800",
-      link: "/contact"
+      link: "/work/instagram-growth-framework"
     },
     {
       title: "SEO Growth Strategy",
       badge: "Organic Traffic",
       desc: "Comprehensive keyword research, content mapping, and organic visibility optimization designed to improve search rankings.",
       coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-      link: "/contact"
+      link: "/work/seo-growth-strategy"
     },
     {
       title: "Meta Ads Campaign",
       badge: "Paid Acquisition",
       desc: "Strategic advertising campaigns focused on audience targeting, creative testing, and conversion optimization.",
       coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-      link: "/contact"
+      link: "/work/meta-ads-campaign"
+    },
+    {
+      title: "Video Editing & Content",
+      badge: "Video Production",
+      desc: "Short-form video editing, rhythmic pacing, kinetic typography, and motion storytelling for high viewer retention.",
+      coverImage: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800",
+      link: "/work/video-editing-content"
     }
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
+    <section id="work" className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
       {/* Decorative gradient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#FDA1A2]/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -202,7 +206,7 @@ export const FeaturedWork = () => {
           <div className="h-0.5 bg-gradient-to-r from-transparent via-[#EF3B33]/50 to-transparent w-40 mx-auto mt-6" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {projects.map((project, i) => (
             <motion.div 
               key={i}
@@ -235,11 +239,11 @@ export const FeaturedWork = () => {
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-serif text-white mb-3 font-medium tracking-tight">
+                <h3 className="text-xl font-serif text-white mb-3 font-medium tracking-tight">
                   {project.title}
                 </h3>
                 
-                <p className="text-sm text-white/70 leading-relaxed font-light mb-6">
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-light mb-6">
                   {project.desc}
                 </p>
               </div>
@@ -298,7 +302,7 @@ export const WhyWorkWithMe = () => {
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
+    <section id="experience" className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
       {/* Decorative glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#EF3B33]/3 rounded-full blur-[120px] pointer-events-none" />
 
@@ -384,14 +388,6 @@ export const ToolsIUse = () => {
       )
     },
     {
-      name: "Google Ads",
-      icon: (
-        <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12.01 21.49L2.39 4.81c-.53-.91.13-2.06 1.18-2.06h16.85c1.05 0 1.71 1.15 1.18 2.06l-9.61 16.68c-.53.92-1.85.92-2.38 0z"/>
-        </svg>
-      )
-    },
-    {
       name: "ChatGPT",
       icon: (
         <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
@@ -418,7 +414,7 @@ export const ToolsIUse = () => {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
+    <section id="tools" className="py-20 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
       <div className="max-w-[1720px] mx-auto w-full z-10 relative">
         <div className="text-center mb-12">
           <motion.span 
@@ -579,7 +575,7 @@ export const LatestInsights = () => {
     .slice(0, 3);
 
   return (
-    <section className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
+    <section id="blog" className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent scroll-mt-20 relative border-t border-white/5">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#EF3B33]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-[1720px] mx-auto w-full z-10 relative">
@@ -728,7 +724,7 @@ export const FinalCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent relative border-t border-white/5 overflow-hidden">
+    <section id="contact" className="py-24 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent relative border-t border-white/5 overflow-hidden">
       {/* Immersive glow background effects */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[350px] bg-[#EF3B33]/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-12 left-12 w-48 h-48 bg-[#FDA1A2]/3 rounded-full blur-[80px] pointer-events-none" />

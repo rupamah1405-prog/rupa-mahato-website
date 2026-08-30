@@ -14,6 +14,10 @@ export interface SocialConfig {
     address: string; // Fixed and prominently displayed
     url: string; // "mailto:..."
   };
+  medium: {
+    url: string;
+    handle: string;
+  };
 }
 
 export const socialsConfig: SocialConfig = {
@@ -28,5 +32,9 @@ export const socialsConfig: SocialConfig = {
   email: {
     address: "rupamah1405@gmail.com",
     url: "mailto:rupamah1405@gmail.com"
+  },
+  medium: {
+    url: "https://medium.com/@rupsah800",
+    handle: "@rupsah800"
   }
 };
