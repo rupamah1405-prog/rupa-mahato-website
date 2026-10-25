@@ -31,6 +31,7 @@ export const Footer = () => {
     { label: 'About', path: '/about' },
     { label: 'Experience', path: '/experience' },
     { label: 'Work', path: '/work' },
+    { label: 'Services & Pricing', path: '/pricing' },
     { label: 'Blog', path: '/blog' },
     { label: 'Q&A', path: '/qa' },
     { label: 'Contact', path: '/contact' },
@@ -65,7 +66,7 @@ export const Footer = () => {
             </p>
             <div className="flex items-center gap-2 text-white/50 text-xs font-light">
               <MapPin size={14} className="text-[#EF3B33] shrink-0" />
-              <span>Jamshedpur, Jharkhand • Available Worldwide</span>
+              <span>Jamshedpur, Jharkhand</span>
             </div>
             
             {/* Social Icons */}

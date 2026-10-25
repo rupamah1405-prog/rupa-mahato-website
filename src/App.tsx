@@ -10,12 +10,12 @@ import {
   FeaturedServices, 
   FeaturedWork, 
   WhyWorkWithMe, 
-  ToolsIUse, 
   LatestInsights, 
   FinalCTA 
 } from './components/HomeSections';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
+import { ServicesPricingPage } from './components/ServicesPricingPage';
 import { SeoProject } from './components/projects/SeoProject';
 import { InstagramProject } from './components/projects/InstagramProject';
 import { MetaAdsProject } from './components/projects/MetaAdsProject';
@@ -88,6 +88,7 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'Experience', path: '/experience' },
     { name: 'Work', path: '/work' },
+    { name: 'Services & Pricing', path: '/pricing' },
     { name: 'Blog', path: '/blog' },
     { name: 'Q&A', path: '/qa' },
     { name: 'Contact', path: '/contact' },
@@ -104,6 +105,9 @@ const Navbar = () => {
   const isLinkActive = (link: typeof navLinks[0]) => {
     if (link.path === '/') {
       return location.pathname === '/';
+    }
+    if (link.path === '/pricing') {
+      return location.pathname === '/pricing' || location.pathname === '/services-pricing' || location.pathname === '/services';
     }
     if (link.path === '/work') {
       return location.pathname === '/work' || location.pathname.startsWith('/work/') || location.pathname.startsWith('/projects/');
@@ -150,14 +154,14 @@ const Navbar = () => {
           </div>
           
           {/* Center Navigation Capsule */}
-          <div className="hidden lg:flex items-center bg-black/20 backdrop-blur-sm border border-white/5 rounded-[12px] p-1 gap-2">
+          <div className="hidden lg:flex items-center bg-black/20 backdrop-blur-sm border border-white/5 rounded-[12px] p-1 gap-1 xl:gap-2">
             {navLinks.map((link) => {
               const active = isLinkActive(link);
               return (
                 <div
                   key={link.name}
                   onClick={() => handleNavClick(link)}
-                  className={`text-[9px] uppercase font-bold tracking-[0.18em] px-5 h-10 flex items-center justify-center rounded-[8px] transition-all duration-300 ease-in-out select-none cursor-pointer ${
+                  className={`text-[9px] uppercase font-bold tracking-[0.12em] xl:tracking-[0.16em] px-3 xl:px-4.5 h-10 flex items-center justify-center rounded-[8px] transition-all duration-300 ease-in-out select-none cursor-pointer text-center ${
                     active 
                       ? 'bg-[#ff6b35] text-white shadow-[0_0_20px_rgba(255,107,53,0.5)] border border-[#ff6b35] hover:scale-105 hover:shadow-[0_0_25px_rgba(255,107,53,0.6)]' 
                       : 'bg-[#0F0B26]/60 backdrop-blur-md border border-[#ff6b35]/25 text-white/70 hover:bg-gradient-to-r hover:from-[#ff6b35] hover:to-[#EF3B33] hover:text-white hover:scale-105 hover:shadow-[0_0_15px_rgba(255,107,53,0.35)] hover:border-[#ff6b35]'
@@ -450,55 +454,44 @@ const About = () => {
     <section id="about" className="pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-20 md:pb-28 px-4 sm:px-6 md:px-8 lg:px-10 bg-transparent overflow-hidden relative">
       <div className="max-w-[1720px] mx-auto w-full relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
-          {/* Left Side: Profile Image - Clean & Completely Static with Refined Frames */}
+          {/* Left Side: Profile Image */}
           <div className="lg:col-span-5 flex justify-center relative min-h-0 py-6 lg:py-0 items-center">
-            
-            {/* Ambient visual decorations */}
-            <div className="absolute w-[280px] h-[280px] border border-white/[0.03] rounded-full pointer-events-none" />
-            <div className="absolute w-[320px] h-[320px] border border-white/[0.02] border-dashed rounded-full pointer-events-none animate-spin-slow" />
-            
-            {/* Static Premium Container */}
+            {/* Ambient Background Rings */}
+            <div className="absolute w-[320px] h-[320px] border border-white/[0.03] rounded-full pointer-events-none" />
+            <div className="absolute w-[370px] h-[370px] border border-white/[0.02] border-dashed rounded-full pointer-events-none animate-spin-slow" />
+
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="relative flex items-center justify-center p-8 w-full h-full"
+              className="relative flex items-center justify-center p-4 sm:p-6 lg:p-6 w-full h-full"
             >
               <div className="relative">
-                {/* Subtle static bottom-left backdrop glow to enrich composition, no move/hover */}
+                {/* Glow behind frame */}
                 <div className="absolute -inset-4 rounded-[2.8rem] bg-rose-pink/5 blur-2xl pointer-events-none" />
 
-                {/* Portrait Container - exactly original image dimension and path */}
-                <div className="relative w-[240px] sm:w-[280px] lg:w-[350px] xl:w-[380px] aspect-[4/5] rounded-[2.5rem] border border-white/10 bg-white/5 overflow-hidden flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                {/* Profile Card Container with ~15% larger width and height, preserving rounded corners & aspect ratio */}
+                <div className="relative w-[276px] sm:w-[322px] lg:w-[402px] xl:w-[438px] aspect-[4/5] rounded-[2.5rem] border border-white/10 bg-white/5 overflow-hidden flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                   <div className="w-full h-full overflow-hidden">
                     <img
-                      src="https://i.ibb.co/v4r0Tk0y/Chat-GPT-Image-Jun-22-2026-03-48-53-PM.png"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover select-none pointer-events-none object-[center_35%]"
+                      src="/assets/aistudio/IMG_20261025_205054.jpg_9952d550.jpeg"
+                      className="w-full h-full object-cover select-none pointer-events-none object-[center_20%]"
                       alt="Rupa Mahato - Social Media Manager & Content Strategist"
                       loading="lazy"
                     />
                   </div>
-
-                  {/* Refined clean dark gradient overlay */}
+                  {/* Subtle Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-[#1D1842]/20 via-transparent to-white/[0.04] pointer-events-none" />
                 </div>
 
-                {/* Stationary decorative premium branding tag */}
-                <div className="absolute -bottom-2 -left-2 bg-[#171335]/95 border border-white/10 px-4 py-2 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.6)] pointer-events-none">
-                  <span className="text-[7px] font-sans font-black tracking-[0.3em] text-rose-pink">STRATEGY • PERFORMANCE</span>
-                </div>
-
-                {/* Classic visual camera crosshair accents */}
-                <div className="absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-white/20 rounded-tl" />
-                <div className="absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-white/20 rounded-br" />
+                {/* Subtle Camera Crosshairs Decor */}
+                <div className="absolute top-3 left-3 w-3.5 h-3.5 border-t border-l border-white/20 rounded-tl pointer-events-none" />
+                <div className="absolute bottom-3 right-3 w-3.5 h-3.5 border-b border-r border-white/20 rounded-br pointer-events-none" />
               </div>
             </motion.div>
-
           </div>
 
-          {/* Right Column: About content, biography, introduction, with elegant frames */}
+          {/* Right Side: Content */}
           <div className="lg:col-span-7 space-y-8 text-left">
             <div>
               <motion.span 
@@ -570,12 +563,10 @@ const About = () => {
                 </div>
               </div>
               <p className="text-[10px] font-sans text-rose-pink uppercase tracking-widest font-bold">
-                *Active in Jharkhand & Global
+                *Based in Jamshedpur, Jharkhand
               </p>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>
@@ -1893,7 +1884,6 @@ const HomePage = () => {
       <FeaturedServices />
       <FeaturedWork />
       <WhyWorkWithMe />
-      <ToolsIUse />
       <LatestInsights />
       <FAQSection />
       <FinalCTA />
@@ -1922,7 +1912,7 @@ const AboutPage = () => {
 const ExperiencePage = () => {
   useSEO(
     "Professional Experience | Rupa Mahato Portfolio",
-    "Review Rupa Mahato's track record of driving brand growth and successful marketing campaigns in Jharkhand and globally, including role at Yours Digitally."
+    "Review Rupa Mahato's track record of driving brand growth and successful marketing campaigns in Jamshedpur and Jharkhand, including role at Yours Digitally."
   );
   return (
     <motion.div
@@ -2083,6 +2073,24 @@ const QAPage = () => {
   );
 };
 
+const PricingPage = () => {
+  useSEO(
+    "Services & Pricing | Rupa Mahato Portfolio",
+    "Explore transparent services and pricing plans for Meta Ads Management and Social Media Management by Rupa Mahato in Jamshedpur."
+  );
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen w-full relative z-10"
+    >
+      <ServicesPricingPage />
+    </motion.div>
+  );
+};
+
 const ContactPage = () => {
   useSEO(
     "Get In Touch | Hire Rupa Mahato",
@@ -2109,6 +2117,7 @@ export default function App() {
 }
 
 function AppContent() {
+  const location = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -2134,7 +2143,7 @@ function AppContent() {
       <Navbar />
       
       <AnimatePresence mode="wait">
-        <Routes>
+        <Routes location={location}>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/experience" element={<ExperiencePage />} />
@@ -2147,6 +2156,9 @@ function AppContent() {
           <Route path="/projects/instagram-growth-framework" element={<InstagramProjectPage />} />
           <Route path="/projects/meta-ads-campaign" element={<MetaAdsProjectPage />} />
           <Route path="/projects/video-editing-content" element={<VideoEditingProjectPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/services-pricing" element={<PricingPage />} />
+          <Route path="/services" element={<PricingPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/admin" element={<BlogManagerPage />} />
           <Route path="/blog-manager" element={<BlogManagerPage />} />

@@ -22,11 +22,11 @@ export interface SocialConfig {
 
 export const socialsConfig: SocialConfig = {
   instagram: {
-    url: "https://www.instagram.com/smmrupa02",
-    handle: "@smmrupa02"
+    url: "https://www.instagram.com/life.latly?vrfl=MXVvMDlndHAxNTJhZA==",
+    handle: "@life.latly"
   },
   linkedin: {
-    url: "https://www.linkedin.com/",
+    url: "https://www.linkedin.com/in/rupa-mahato-14782040b",
     displayName: "Rupa Mahato"
   },
   email: {

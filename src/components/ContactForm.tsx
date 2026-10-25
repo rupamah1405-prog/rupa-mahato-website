@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLocation } from 'react-router-dom';
 import { Mail, Instagram, Linkedin, Send, Phone, CheckCircle2 } from 'lucide-react';
 import { socialsConfig } from '../config/socials';
  
 export const ContactForm = () => {
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
   });
+
+  useEffect(() => {
+    if (location.state && (location.state.service || location.state.plan)) {
+      const state = location.state as { service?: string; plan?: string; tier?: string };
+      const servicePart = state.service ? `${state.service}` : '';
+      const planPart = state.plan ? ` (${state.plan})` : '';
+      setFormData(prev => ({
+        ...prev,
+        message: prev.message || `Hi Rupa, I'm interested in discussing your ${servicePart}${planPart} for my brand. Let's connect!`
+      }));
+    }
+  }, [location.state]);
  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -71,7 +85,7 @@ export const ContactForm = () => {
                 Let's construct something extraordinary together.
               </h3>
               <p className="text-sm font-sans text-white leading-relaxed font-light">
-                Ready to rank higher for local searches and dominate on Instagram? Get in touch to schedule a free 30-minute discovery growth audit. Located conveniently in Jamshedpur, Jharkhand, available for both on-site campaigns and remote contracts worldwide.
+                Ready to rank higher for local searches and dominate on Instagram? Get in touch to schedule a free 30-minute discovery growth audit. Located conveniently in Jamshedpur, Jharkhand, available for both on-site campaigns and remote contracts.
               </p>
             </div>
  
@@ -116,7 +130,7 @@ export const ContactForm = () => {
             <div className="h-px bg-white/10 w-full" />
             
             <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-rose-pink italic">
-              *Serving Jamshedpur, Ranchi, Dhanbad and global clients.
+              *Serving Jamshedpur, Ranchi, and Dhanbad.
             </p>
           </div>
  
